@@ -1,40 +1,62 @@
-/* 
-These are the recommended built-in locators.
-page.getByAltText() to locate an element, usually image, by its text alternative.
-page.getByPlaceholder() to locate an input by placeholder.
-page.getByRole() to locate by explicit and implicit accessibility attributes.
-page.getByText() to locate by text content.
-page.getByLabel() to locate a form control by associated label's text.
-page.getByTitle() to locate an element by its title attribute.
-page.getByTestId() to locate an element based on its data-testid attribute (other attributes can be configured).
+import { test, expect } from "@playwright/test";
 
-*/
+test("test", async ({ page }) => {
+    //    const { chromium } = require('playwright');
 
-import { test, expect } from '@playwright/test';
+// (async () => {
+//   const browser = await chromium.launch({ headless: false });
+//   const context = await browser.newContext();
+//   const page = await context.newPage();
 
-test('test', async({page})=>{
-    await page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+  try {
+    // Navigate to login page
+    await page.goto('https://innopath.itdoseinfo.com:8089/login', {
+      waitUntil: 'networkidle'
+    });
+    await page.pause();
+
+    // Login process
+    await page.fill('input[name="username"], input[type="text"]', 'Market-admin');
+    await page.fill('input[name="password"], input[type="password"]', 'Admin@123');
+    await page.click('button[type="submit"], button:has-text("Login"), input[type="submit"]');
+
+    // Wait for dashboard/home page after login
     await page.waitForLoadState('networkidle');
-    // await page.pause();
+    console.log('Login successful');
 
-    // page.getByAltText() to locate an element, usually image, by its text alternative.
-    const logo = await page.getByAltText('company-branding');
-    await expect(logo).toBeVisible();
+    // Example: Navigate to registration page/module
+    // Update selectors and URLs based on actual application structure
+    await page.click('a:has-text("Registration"), a:has-text("Patient Registration"), button:has-text("Registration")');
+    await page.waitForLoadState('networkidle');
 
-    // page.getByPlaceholder() to locate an input by placeholder.
-    const Username = await page.getByPlaceholder('Username').fill("Admin");
-    const Password = await page.getByPlaceholder('Password').fill("admin123")
-    await page.waitForTimeout(2000);
-    // page.getByRole() to locate by explicit and implicit accessibility attributes
-    const LoginButton = await page.getByRole('button', {type: 'submit'}).click();
+    // Fill registration form (example fields - adjust as per actual form)
+    await page.fill('input[name="patientName"], input[placeholder*="Name"]', 'Test Patient');
+    await page.fill('input[name="mobile"], input[placeholder*="Mobile"]', '9876543210');
+    await page.fill('input[name="age"], input[placeholder*="Age"]', '30');
 
-    // page.getByText() to locate by text content.
-    const adminname = await page.locator("//p[@class='oxd-userdropdown-name']").textContent();
-    await expect(await page.getByText(adminname)).toBeVisible();
+    // Gender selection example
+    const genderSelector = page.locator('select[name="gender"]');
+    if (await genderSelector.count() > 0) {
+      await genderSelector.selectOption({ label: 'Male' });
+    }
 
-    // page.getByLabel() to locate a form control by associated label's text.
-    
-})
+    // Submit registration
+    await page.click('button:has-text("Save"), button:has-text("Submit"), input[type="submit"]');
+
+    await page.waitForLoadState('networkidle');
+    console.log('Registration completed successfully');
+
+    // Optional screenshot
+    await page.screenshot({ path: 'registration-success.png', fullPage: true });
+
+  } catch (error) {
+    console.error('Automation failed:', error);
+    await page.screenshot({ path: 'error-screenshot.png', fullPage: true });
+  } finally {
+    // Keep browser open for review, close manually if needed
+    // await browser.close();
+  }
+});
 
 
 
