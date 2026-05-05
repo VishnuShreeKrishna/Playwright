@@ -21,7 +21,7 @@ test("test", async ({ page }) => {
   await page.getByRole('link', { name: ' Registration' }).click();
   
   // select centre from dropdown
-  await page.locator('#react-select-5-input').first().click();
+  await page.click('#react-select-5-input');
   await page.locator('#react-select-5-input').fill('5757');
   await page.locator('#react-select-5-input').press('ArrowDown');
   await page.locator('#react-select-5-input').press('Enter');
@@ -35,8 +35,9 @@ test("test", async ({ page }) => {
 
   
   await page.waitForLoadState("networkidle");
-  await page.locator('[id="Mobile"]').click();
-  await page.locator('[id="Mobile"]').fill("9876543210");
+  // await page.locator('input[id="Mobile"]').click();
+  await page.fill("input[id='Mobile']","9876543210");
+  // await page.fill("input[id='Mobile']","9876543210");
 
 
 
