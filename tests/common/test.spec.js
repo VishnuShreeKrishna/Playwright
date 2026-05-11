@@ -8,7 +8,7 @@ test("test", async ({ page }) => {
   
   await page.goto("https://innopath.itdoseinfo.com:8089/login");
   await expect(page).toHaveURL('https://innopath.itdoseinfo.com:8089/login');
-  // await page.pause();
+  await page.pause();
 
   await page.waitForLoadState("networkidle");
   await page.locator('[id="username"]').fill("Market-admin");
@@ -18,6 +18,9 @@ test("test", async ({ page }) => {
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(1000);
   console.log("logged in successfully");
+  const logout = page.locator("[class= 'fas fa-sign-out-alt']");
+  await expect('logout').toBevisible();
+  console.log("logged out button is visible after login");
   await page.getByRole('link', { name: ' Registration' }).click();
   
   // select centre from dropdown
@@ -47,6 +50,6 @@ test("test", async ({ page }) => {
 
   await page.waitForLoadState("networkidle");
   // await page.waitForTimeout(1000);
-
+  await page.close();
   console.log("logged out successfully");
 });
